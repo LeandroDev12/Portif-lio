@@ -1,0 +1,555 @@
+<!DOCTYPE html>  <html lang="pt-BR">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Portifólio</title>  
+    <style>  
+        * {  
+            margin: 0;  
+            padding: 0;  
+            box-sizing: border-box;  
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+        }  body {  
+        background: linear-gradient(135deg, #0f0c1f, #1a1a2e);  
+        min-height: 100vh;  
+        padding: 2rem;  
+        color: #fff;  
+    }  
+
+    h1 {  
+        text-align: center;  
+        font-size: 2.5rem;  
+        margin-bottom: 1.5rem;  
+        color: #fff;  
+        text-shadow: 0 0 10px #00a8ff;  
+        letter-spacing: 2px;  
+    }  
+
+    .tab-bar {  
+        display: flex;  
+        gap: 1rem;  
+        margin-bottom: 2rem;  
+        justify-content: center;  
+    }  
+
+    .tab-button {  
+        background: rgba(255, 255, 255, 0.05);  
+        border: 1px solid rgba(255, 255, 255, 0.1);  
+        color: #fff;  
+        padding: 0.75rem 2rem;  
+        font-size: 1.2rem;  
+        font-weight: 600;  
+        border-radius: 40px;  
+        cursor: pointer;  
+        backdrop-filter: blur(10px);  
+        transition: all 0.3s;  
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);  
+    }  
+
+    .tab-button:hover {  
+        background: rgba(0, 168, 255, 0.2);  
+        border-color: #00a8ff;  
+        transform: translateY(-2px);  
+    }  
+
+    .tab-button.active {  
+        background: #00a8ff;  
+        border-color: #00a8ff;  
+        color: #0f0c1f;  
+        box-shadow: 0 0 15px #00a8ff;  
+    }  
+
+    .gallery {  
+        display: grid;  
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));  
+        gap: 1.5rem;  
+        margin-bottom: 3rem;  
+        transition: opacity 0.3s;  
+    }  
+
+    .card {  
+        background: rgba(255, 255, 255, 0.05);  
+        border-radius: 16px;  
+        overflow: hidden;  
+        backdrop-filter: blur(10px);  
+        border: 1px solid rgba(255, 255, 255, 0.1);  
+        transition: transform 0.3s, box-shadow 0.3s;  
+        cursor: pointer;  
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);  
+        opacity: 1;  
+        transform: translateY(0);  
+    }  
+
+    .card:hover {  
+        transform: translateY(-5px) scale(1.02);  
+        box-shadow: 0 15px 30px rgba(0, 168, 255, 0.3);  
+        border-color: #00a8ff;  
+    }  
+
+    .card:focus-visible {  
+        outline: 3px solid #00a8ff;  
+        outline-offset: 2px;  
+    }  
+
+    .thumb {  
+        width: 100%;  
+        aspect-ratio: 16 / 9;  
+        object-fit: cover;  
+        display: block;  
+        transition: filter 0.3s;  
+    }  
+
+    .card:hover .thumb {  
+        filter: brightness(1.1);  
+    }  
+
+    .card-content {  
+        padding: 1rem;  
+    }  
+
+    .card-title {  
+        font-size: 1rem;  
+        font-weight: 600;  
+        line-height: 1.4;  
+        display: -webkit-box;  
+        -webkit-line-clamp: 2;  
+        -webkit-box-orient: vertical;  
+        overflow: hidden;  
+    }  
+
+    .warning {  
+        font-size: 0.8rem;  
+        color: #ffaa00;  
+        margin-top: 0.5rem;  
+        font-weight: 500;  
+    }  
+
+    .modal {  
+        position: fixed;  
+        top: 0;  
+        left: 0;  
+        width: 100%;  
+        height: 100%;  
+        background: rgba(0, 0, 0, 0.95);  
+        display: flex;  
+        align-items: center;  
+        justify-content: center;  
+        z-index: 1000;  
+        opacity: 0;  
+        pointer-events: none;  
+        transition: opacity 0.3s;  
+        padding: 2rem;  
+    }  
+
+    .modal.open {  
+        opacity: 1;  
+        pointer-events: all;  
+    }  
+
+    .modal-content {  
+        max-width: 1000px;  
+        width: 100%;  
+        background: #1a1a2e;  
+        border-radius: 20px;  
+        padding: 2rem;  
+        box-shadow: 0 20px 40px rgba(0, 168, 255, 0.3);  
+        border: 1px solid #00a8ff;  
+        position: relative;  
+    }  
+
+    #closeModal {  
+        position: absolute;  
+        top: 1rem;  
+        right: 1.5rem;  
+        font-size: 2.5rem;  
+        color: #fff;  
+        cursor: pointer;  
+        background: none;  
+        border: none;  
+        transition: color 0.2s;  
+        line-height: 1;  
+    }  
+
+    #closeModal:hover {  
+        color: #00a8ff;  
+    }  
+
+    #modalVideoContainer {  
+        width: 100%;  
+    }  
+
+    #modalVideoContainer h2 {  
+        margin: 0 0 1.5rem 0;  
+        border-left: 5px solid #00a8ff;  
+        padding-left: 1rem;  
+        font-size: 1.5rem;  
+    }  
+
+    #player,  
+    #playerLocal {  
+        border-radius: 12px;  
+        overflow: hidden;  
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);  
+    }  
+
+    #loadingScreen {  
+        position: fixed;  
+        top: 0;  
+        left: 0;  
+        width: 100%;  
+        height: 100%;  
+        background: #0f0c1f;  
+        display: flex;  
+        justify-content: center;  
+        align-items: center;  
+        z-index: 2000;  
+        transition: opacity 0.5s;  
+    }  
+
+    .loader {  
+        border: 5px solid rgba(255, 255, 255, 0.1);  
+        border-top: 5px solid #00a8ff;  
+        border-radius: 50%;  
+        width: 60px;  
+        height: 60px;  
+        animation: spin 1s linear infinite;  
+    }  
+
+    @keyframes spin {  
+        0% { transform: rotate(0deg); }  
+        100% { transform: rotate(360deg); }  
+    }  
+
+    #whatsappIcon {  
+        position: fixed;  
+        bottom: 2rem;  
+        right: 2rem;  
+        width: 60px;  
+        height: 60px;  
+        border-radius: 50%;  
+        background: #25d366;  
+        display: flex;  
+        justify-content: center;  
+        align-items: center;  
+        box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);  
+        transition: transform 0.3s, box-shadow 0.3s;  
+        z-index: 100;  
+    }  
+
+    #whatsappIcon:hover {  
+        transform: scale(1.1);  
+        box-shadow: 0 8px 25px rgba(37, 211, 102, 0.7);  
+    }  
+
+    #whatsappIcon img {  
+        width: 35px;  
+        height: 35px;  
+    }  
+
+    @media (max-width: 600px) {  
+        body { padding: 1rem; }  
+        h1 { font-size: 2rem; }  
+        .tab-button { padding: 0.5rem 1.5rem; font-size: 1rem; }  
+        .modal-content { padding: 1.5rem; }  
+    }  
+</style>
+
+</head>  
+<body>  
+    <div id="loadingScreen">  
+        <div class="loader"></div>  
+    </div>  <h1>Portifólio</h1>  
+
+<div class="tab-bar">  
+    <button class="tab-button active" id="tabShort">🎬 Vídeos Curtos</button>  
+    <button class="tab-button" id="tabLong">⏱️ Vídeos Longos</button>  
+</div>  
+
+<div id="videoGallery" class="gallery"></div>  
+
+<div id="videoModal" class="modal">  
+    <div class="modal-content">  
+        <span id="closeModal">&times;</span>  
+        <div id="modalVideoContainer"></div>  
+    </div>  
+</div>  
+
+<script>  
+    // ----------------------- Lista de vídeos atualizada -----------------------  
+    const videos = [  
+      {  
+        title: "Vídeo de Apresentação",  
+        thumb: "https://img.youtube.com/vi/6V5hf0XxIWM/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/6V5hf0XxIWM",  
+        isIntro: true  
+      },
+{
+title: "A Marvel escondeu segredos do Tom Holland",
+thumb: "https://img.youtube.com/vi/SXQPkOosy-E/hqdefault.jpg",
+url: "https://www.youtube.com/embed/SXQPkOosy-E"
+},
+{
+title: "David Fincher trolou todo mundo nesse filme",
+thumb: "https://img.youtube.com/vi/mAEqaq1ZV1U/hqdefault.jpg",
+url: "https://www.youtube.com/embed/mAEqaq1ZV1U"
+},
+{
+title: "Robert Pattinson enganou jornalistas por anos",
+thumb: "https://img.youtube.com/vi/tur91bhUBX0/hqdefault.jpg",
+url: "https://www.youtube.com/embed/tur91bhUBX0"
+},
+
+  
+      {  
+        title: "Prenda a atenção dos seus clientes",  
+        thumb: "https://img.youtube.com/vi/E3b03WCMaJc/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/E3b03WCMaJc"  
+      },  
+      {  
+        title: "O surgimento da Smart Fit",  
+        thumb: "https://img.youtube.com/vi/8oAgSAGhGq0/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/8oAgSAGhGq0"  
+      },  
+      {  
+        title: "A importância de ter um seguro de vida",  
+        thumb: "https://img.youtube.com/vi/VocoRi6TbdE/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/VocoRi6TbdE"  
+      },  
+      {  
+        title: "Quanto custa um seguro de vida?",  
+        thumb: "https://img.youtube.com/vi/jBssoMUcpC8/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/jBssoMUcpC8"  
+      },  
+      {  
+        title: "Análise da Silhouette Cameo 5",  
+        thumb: "https://img.youtube.com/vi/RZVH8Esq0s4/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/RZVH8Esq0s4"  
+      },  
+      {  
+        title: "Instalando o Programa Affinity",  
+        thumb: "https://img.youtube.com/vi/DuTXhxiRVlw/maxresdefault.jpg",  
+        url: "https://www.youtube.com/embed/DuTXhxiRVlw"  
+      },  
+      // NOVOS VÍDEOS INSERIDOS AQUI  
+      // NOVOS VÍDEOS INSERIDOS AQUI
+
+// FIM DOS NOVOS VÍDEOS
+// FIM DOS NOVOS VÍDEOS
+{ title: "Somos poeira das estrelas", thumb: "https://img.youtube.com/vi/qHwA0o4pmZQ/maxresdefault.jpg", url: "https://www.youtube.com/embed/qHwA0o4pmZQ" },
+{ title: "Quando iremos a Marte?", thumb: "https://img.youtube.com/vi/Bsug3KoTWaM/maxresdefault.jpg", url: "https://www.youtube.com/embed/Bsug3KoTWaM" },
+{ title: "O que acontece se cair num buraco negro?", thumb: "https://img.youtube.com/vi/YI9zRN7wJIU/maxresdefault.jpg", url: "https://www.youtube.com/embed/YI9zRN7wJIU" },
+{ title: "Pálido Ponto Azul", thumb: "https://img.youtube.com/vi/fBgNSIRWIns/maxresdefault.jpg", url: "https://www.youtube.com/embed/fBgNSIRWIns" },
+{ title: "O que é ser estoico?", thumb: "https://img.youtube.com/vi/r_uEUM_A1Xc/maxresdefault.jpg", url: "https://www.youtube.com/embed/r_uEUM_A1Xc" },
+{
+title: "Discurso de salvação de Jesus",
+thumb: "https://img.youtube.com/vi/JNU0gHHmhXo/maxresdefault.jpg",
+url: "https://www.youtube.com/embed/JNU0gHHmhXo"
+},
+{
+title: "O problema do apego",
+thumb: "https://img.youtube.com/vi/XaZ9B4-V-2o/maxresdefault.jpg",
+url: "https://www.youtube.com/embed/XaZ9B4-V-2o"
+},
+{
+title: "Peter Jordan era ateu?",
+thumb: "https://img.youtube.com/vi/_y5d4QaIZ60/maxresdefault.jpg",
+url: "https://www.youtube.com/embed/_y5d4QaIZ60"
+},
+{
+title: "Por que Peter acredita em Deus",
+thumb: "https://img.youtube.com/vi/b9fk6DWdYC8/maxresdefault.jpg",
+url: "https://www.youtube.com/embed/b9fk6DWdYC8"
+},
+{ title: "Earth Song - Michael Jackson", thumb: "earth.jpg", url: "https://www.youtube.com/embed/JblVfbUBtmE" },
+{ title: "Thriller - Michael Jackson", thumb: "thriller.jpg", url: "https://www.youtube.com/embed/l8gfm6u5ES4" },
+{ title: "A franquia Resident Evil é super estimada", thumb: "resi.jpg", url: "https://www.youtube.com/embed/_2iyuu1E2jw", description: "Contém palavrão" },
+{ title: "5 Coisas que o Kratos fez de bom", thumb: "kratos.jpg", url: "https://www.youtube.com/embed/c6W6k6s9HEo", description: "Contém palavrão" },
+{ title: "Os privilégios dos políticos brasileiros", thumb: "kkk.jpg", url: "https://www.youtube.com/embed/KCW7t33yjZc" },
+{ title: "Origem da lei Magnitsky", thumb: "lei.jpg", url: "https://www.youtube.com/embed/5-xSb2SIhRc" },
+{ title: "Adultização", thumb: "felca.jpg", url: "https://www.youtube.com/embed/Bq1vE7TV6II" },
+{ title: "O nepotismo no governo Lula", thumb: "nepotismo.jpg", url: "https://www.youtube.com/embed/lK-d0vVb3SI" },
+{ title: "As hipocrisias de Lula", thumb: "lula.jpg", url: "https://www.youtube.com/embed/j6zOTaiyUeU" },
+{ title: "As leis mais INÚTEIS DO BRASIL", thumb: "leis.jpg", url: "https://www.youtube.com/embed/PjMPwfiQNqo" },
+{
+title: "BiTinCorp",
+thumb: "bit.jpg",
+url: "https://www.youtube.com/embed/fUnRJUhzQ-Y"
+}
+];
+
+// ----------------------- Classificação automática: Earth Song como primeiro longo -----------------------  
+    const earthSongIndex = videos.findIndex(v => v.title === "Earth Song - Michael Jackson");  
+      
+    videos.forEach((video, index) => {  
+        if (index < earthSongIndex) {  
+            video.type = "short";  
+        } else {  
+            video.type = "long";  
+        }  
+    });  
+
+    // ----------------------- Elementos da UI -----------------------  
+    const gallery = document.getElementById('videoGallery');  
+    const tabShort = document.getElementById('tabShort');  
+    const tabLong = document.getElementById('tabLong');  
+    let currentType = 'short';  
+
+    // ----------------------- Modal -----------------------  
+    const modal = document.getElementById('videoModal');  
+    const modalContainer = document.getElementById('modalVideoContainer');  
+    const closeBtn = document.getElementById('closeModal');  
+    let player;  
+
+    function isLocalVideo(url) {  
+        return url.endsWith(".mp4");  
+    }  
+
+    function openModal(url, title, isIntro = false) {  
+        if (!modal || !modalContainer) return;  
+
+        modal.classList.add('open');  
+        modal.dataset.isIntro = isIntro ? 'true' : 'false';  
+
+        modalContainer.innerHTML = `<h2 style="color:#fff;margin-bottom:1rem;">${title}</h2>`;  
+        document.body.style.overflow = 'hidden';  
+
+        if (isLocalVideo(url)) {  
+            modalContainer.innerHTML += `  
+                <video id="playerLocal" width="100%" controls autoplay style="border:none; border-radius:12px;">  
+                    <source src="${url}" type="video/mp4">  
+                </video>`;  
+            return;  
+        }  
+
+        modalContainer.innerHTML += `<div id="player"></div>`;  
+
+        player = new YT.Player('player', {  
+            height: '450',  
+            width: '100%',  
+            videoId: getVideoId(url),  
+            playerVars: { autoplay: 1, rel: 0, modestbranding: 1 },  
+            events: {  
+                'onReady': event => event.target.getIframe().style.border = 'none'  
+            }  
+        });  
+    }  
+
+    function getVideoId(url) {  
+        const regex = /(?:embed\/|v=)([a-zA-Z0-9_-]{11})/;  
+        const match = url.match(regex);  
+        return match ? match[1] : null;  
+    }  
+
+    function closeModal() {  
+        if (!modal || !modalContainer) return;  
+
+        modal.classList.remove('open');  
+        modalContainer.innerHTML = '';  
+        document.body.style.overflow = '';  
+
+        if (player) {  
+            player.destroy();  
+            player = null;  
+        }  
+    }  
+
+    closeBtn?.addEventListener('click', closeModal);  
+    modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });  
+
+    // ----------------------- Criação de cards -----------------------  
+    function createVideoCard(video) {  
+        const card = document.createElement('div');  
+        card.className = 'card' + (video.isIntro ? ' intro' : '');  
+        card.tabIndex = 0;  
+
+        card.innerHTML = `  
+            <div style="position: relative;">  
+                <img class="thumb" src="${video.thumb}" alt="Thumbnail do vídeo" loading="lazy" />  
+                <div class="play-overlay"></div>  
+            </div>  
+            <div class="card-content">  
+                <h3 class="card-title">${video.title}</h3>  
+                ${video.description ? `<p class="warning">${video.description}</p>` : ''}  
+            </div>  
+        `;  
+
+        card.addEventListener('click', () => openModal(video.url, video.title, video.isIntro));  
+        return card;  
+    }  
+
+    // ----------------------- Renderizar galeria conforme tipo -----------------------  
+    function renderGallery(type) {  
+        if (!gallery) return;  
+
+        const filtered = videos.filter(v => v.type === type);  
+        gallery.innerHTML = '';  
+
+        filtered.forEach((video, index) => {  
+            const card = createVideoCard(video);  
+            gallery.appendChild(card);  
+            setTimeout(() => {  
+                card.style.opacity = '1';  
+                card.style.transform = 'translateY(0)';  
+            }, index * 50);  
+        });  
+    }  
+
+    // ----------------------- Alternância de abas -----------------------  
+    function setActiveTab(type) {  
+        if (type === 'short') {  
+            tabShort.classList.add('active');  
+            tabLong.classList.remove('active');  
+        } else {  
+            tabLong.classList.add('active');  
+            tabShort.classList.remove('active');  
+        }  
+        currentType = type;  
+        renderGallery(type);  
+    }  
+
+    tabShort.addEventListener('click', () => setActiveTab('short'));  
+    tabLong.addEventListener('click', () => setActiveTab('long'));  
+
+    // ----------------------- WhatsApp -----------------------  
+    function createWhatsAppIcon() {  
+        if (document.getElementById('whatsappIcon')) return;  
+
+        const a = document.createElement('a');  
+        a.href = 'https://wa.me/5515981132964';  
+        a.target = '_blank';  
+        a.id = 'whatsappIcon';  
+
+        const img = document.createElement('img');  
+        img.src = 'Whats.png';  
+        img.alt = 'WhatsApp';  
+
+        a.appendChild(img);  
+        document.body.appendChild(a);  
+    }  
+
+    // ----------------------- Inicialização -----------------------  
+    document.addEventListener('DOMContentLoaded', () => {  
+        const loader = document.getElementById('loadingScreen');  
+
+        setTimeout(() => {  
+            if (loader) {  
+                loader.style.opacity = '0';  
+                setTimeout(() => loader.style.display = 'none', 500);  
+            }  
+
+            setActiveTab('short');  
+            createWhatsAppIcon();  
+        }, 1000);  
+    });  
+
+    // Carregar API do YouTube  
+    if (!window.YT) {  
+        const tag = document.createElement('script');  
+        tag.src = 'https://www.youtube.com/iframe_api';  
+        const firstScript = document.getElementsByTagName('script')[0];  
+        firstScript.parentNode.insertBefore(tag, firstScript);  
+    }  
+</script>
+
+</body>  
+</html>  
